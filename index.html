@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JS_Task41</title>
+		<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			width: 100%;
+			height: 100vh;
+		}
+		.mainContainer {
+			width: 1200px;
+			margin: 0 auto;
+		}
+		.container {
+			position: relative;
+		}
+		.map {
+			height: 100vh;
+			width: 100%;
+		}
+
+		form {
+			width: 200px;
+			background-color: grey;
+			border-radius: 5px;
+			padding: 10px;
+			position: absolute;
+			top: 50px;
+			left: 25px;
+			z-index: 999999;
+		}
+
+	</style>
+</head>
+	<body>
+
+	<!--  Task 41
+	
+    Создать карту с селектором городов, при выборе разных городов карта перемещается на указанный город и адрес. 
+    Каждый адрес имеет маркер с кастомной иконкой и своим infoWindow. 
+    Города и адреса взять наших офисов в Полтаве, Киеве и Одессе.
+    
+	--> 
+
+		<div class="mainContainer">
+			<h1>Google Maps</h1>
+			<div class="container">	
+				<form action="#" method="GET" class="formSelect">
+					<select class="formSelect__size" name="address" id="citySelector" class="content_size">
+						<option  value="-1"  selected>---Cities---</option>
+					</select>
+				</form>
+
+				<div class="map" id="0map"></div>
+
+			</div>
+		</div>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYqnqDVs3crpAH4xzizsdYmDMpsuGeSXs&callback=initMap" async defer></script>
+
+		<script>
+        	function initMap() {
+        		var cities = [
+	        		{
+	        			name: "Odessa", // координаты Одесса, ул. Асташкина, д. 29
+	        			infoWindowContent:  '<div id="content">'+
+										        '<h2 id="firstHeading" class="firstHeading">Odessa office</h2>'+
+										        '<div id="bodyContent">'+
+										        '<p> Was opened in February 2013.' +
+										        '</p>'+
+								            '</div>',
+					    marker: { 
+					    	icon: "https://www.shareicon.net/data/48x48/2017/06/21/887334_map_512x512.png",
+					    	latLng: {
+					    		lat: 46.4782251, 
+					    		lng: 30.721044
+					    	}
+					    },
+					    title: 'Office in Odessa'
+	        		},
+	        		{
+	        			name: "Kiev", //Киев, ул.Прорезная, д. 18/1г
+	        			infoWindowContent:  '<div id="content">'+
+										        '<h2 id="firstHeading" class="firstHeading">Kiev office</h2>'+
+										        '<div id="bodyContent">'+
+										        '<p> Was opened in September 2012.' +
+										        '</p>'+
+								            '</div>',
+					    marker: { 
+					    	icon: "https://www.shareicon.net/data/48x48/2017/06/21/887304_right_512x512.png",
+					    	latLng: {
+					    		lat: 50.4486526, 
+					    		lng: 30.5145105
+					    	}
+					    },
+					    title: 'Office in Kiev'
+	        		},
+	        		{
+	        			name: "Poltava", // Полтава, про-кт Мира, д.36
+	        			infoWindowContent:  '<div id="content">'+
+										        '<h2 id="firstHeading" class="firstHeading">Poltava office</h2>'+
+										        '<div id="bodyContent">'+
+										        '<p> Was opened in 2014.' +
+										        '</p>'+
+								            '</div>',
+					    marker: { 
+					    	icon: "https://www.shareicon.net/data/48x48/2017/06/21/887314_alert_512x512.png",
+					    	latLng: {
+					    		lat: 49.5685276, 
+					    		lng: 34.583243
+					    	}
+					    },
+					    title: 'Office in Poltava'
+	        		}	        		
+        		];
+
+				var map0 = new google.maps.Map(document.getElementById('0map'), {
+					zoom: 7,
+					center: cities[0].marker.latLng,
+					mapTypeId: 'roadmap'// по умолчанию
+				});
+
+				var markers = [];
+
+                for (var i = 0; i < cities.length; i++) {
+					markers[i] = new google.maps.Marker({
+						position: cities[i].marker.latLng,
+						map: map0,
+						icon: cities[i].marker.icon,
+						title: cities[i].title
+					});
+				    markers[i].infowindow = new google.maps.InfoWindow({
+				    	content: cities[i].infoWindowContent
+				    });
+
+				    markers[i].addListener('click', function(event) {
+				    	this.infowindow.open(map0, this);
+				    });
+                }
+
+                function initSelector() {
+                	var option;
+                	var parent = document.getElementById('citySelector');
+
+                	for (var j = 0; j < cities.length; j++) {
+	                	option = document.createElement('option');
+	                	option.innerHTML = cities[j].name;
+                		option.setAttribute('value', j);      
+                        parent.appendChild(option);
+                	}
+
+                    parent.addEventListener('change', function(){
+    	                if (this.value == -1) {
+                			return;
+	                	}
+	                	map0.setCenter(cities[this.value].marker.latLng);
+                    });
+                }
+
+                initSelector();
+			}
+
+		</script>	
+	</body>  
+</html>      
